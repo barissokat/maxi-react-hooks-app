@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useReducer } from 'react'
+import React, { useState, useEffect, useReducer, useContext } from 'react'
 
 import Button from '../UI/Button/Button'
 import Card from '../UI/Card/Card'
 import classes from './Login.module.css'
+import AuthContext from '../../store/auth-context'
 
 // Reducer fonksiyonu component içerisindeki herhangi bir şeyle etkileşime girmesine gerek olmadığı için
 // Component dışarısında da tanımlanabilir
@@ -37,11 +38,12 @@ const Login = props => {
     value: '',
     isValid: null
   })
-
   const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
     value: '',
     isValid: null
   })
+
+  const authCtx = useContext(AuthContext)
 
   useEffect(() => {
     console.log('EFFECT RUNNING')
@@ -70,7 +72,6 @@ const Login = props => {
     dispatchEmail({ type: 'USER_INPUT', val: event.target.value })
     // setFormIsValid(event.target.value.includes('@') && enteredPassword.trim().length > 6)
   }
-
   const passwordChangeHandler = event => {
     dispatchPassword({ type: 'USER_INPUT', val: event.target.value })
     // setFormIsValid(emailState.isValid && event.target.value.trim().length > 6)
@@ -79,14 +80,13 @@ const Login = props => {
   const validateEmailHandler = () => {
     dispatchEmail({ type: 'INPUT_BLUR' })
   }
-
   const validatePasswordHandler = () => {
     dispatchPassword({ type: 'INPUT_BLUR' })
   }
 
-  const submitHandler = (event) => {
+  const submitHandler = event => {
     event.preventDefault()
-    props.onLogin(emailState.value, passwordState.value)
+    authCtx.onLogin(emailState.value, passwordState.value)
   }
 
   return (
